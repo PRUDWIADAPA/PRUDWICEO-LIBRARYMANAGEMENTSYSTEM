@@ -1,11 +1,24 @@
 
 pipeline {
     agent any
+    docker{
+        image 'maven:3.9.8-eclipse-temurin-21'
+        reuseNode  true
+    }
 
     stages {
         stage('Origin') {
             steps {
                 echo 'Welcome to PRUDWI CEO World'
+            }
+
+            stage('Build')
+            {
+                steps{
+                    echo 'PRUDWICEO BUILDING THE PROJECT'
+
+                    sh 'clean package -DskipTests'
+                }
             }
         }
     }
