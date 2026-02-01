@@ -3,7 +3,7 @@ pipeline {
     agent any
     docker{
         image 'maven:3.9.8-eclipse-temurin-21'
-        reuseNode  true
+        reuseNode true
     }
 
     stages {
@@ -11,13 +11,43 @@ pipeline {
             steps {
                 echo 'Welcome to PRUDWI CEO World'
             }
+        }
 
-            stage('Build')
-            {
-                steps{
-                    echo 'PRUDWICEO BUILDING THE PROJECT'
+        stage('Build')
+        {
+            steps{
+                echo 'PRUDWI CEO BUILDING'
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        stage('Testing')
+        {
+            parallel{
+                stage('Unit Testing')
+                {
+                    steps{
+                        echo 'PRUDWI CEO UNIT TESTING'
+                        sh 'mvn test'
+                    }
+                    post{
+                        always{
+                                junit '**/target/surefire-reports/*.xml'
+                        }
+                    }
+                }
 
-                    sh 'clean package -DskipTests'
+                stage('Integration Testing'){
+                    steps{
+                        echo 'PRUDWI CEO INTEGRATION TESTING'
+                        sh 'mvn verify -DskipUnitTests'
+                    }
+
+                    post{
+                        always{
+                            junit '**/target/failsafe-reports/*.xml'
+                        }
+                    }
+
                 }
             }
         }
