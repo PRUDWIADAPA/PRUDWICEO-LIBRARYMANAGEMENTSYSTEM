@@ -1,0 +1,12 @@
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Origin') {
+            steps {
+                echo 'Welcome to PRUDWI CEO World'
+            }
+        }
+    }
+}
